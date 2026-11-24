@@ -1,0 +1,30 @@
+# Lake and Lean
+/.lake/
+/build/
+*.olean
+*.ilean
+*.olean.*
+*.lean.c
+*.lean.bc
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+
+# LaTeX
+/paper/build/
+*.aux
+*.bbl
+*.blg
+*.fdb_latexmk
+*.fls
+*.log
+*.out
+*.synctex
+*.synctex.gz
+*.toc
+
+# Editor and desktop files
+*~
+.DS_Store

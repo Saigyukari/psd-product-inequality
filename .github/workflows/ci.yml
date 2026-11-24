@@ -1,0 +1,35 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  lean:
+    name: Lean build
+    runs-on: ubuntu-24.04
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          persist-credentials: false
+      - name: Install Lean
+        uses: leanprover/lean-action@ba3fdfe5c4476c925da13bf11a005ddb47e47aee # v1.7.1
+        with:
+          auto-config: "false"
+          build: "false"
+          test: "false"
+          lint: "false"
+          use-github-cache: "false"
+          use-mathlib-cache: "false"
+      - name: Fetch cached Mathlib imports
+        run: lake exe cache get $(sed -n 's/^import //p' PsdProduct.lean)
+      - name: Build the formalization and check the axiom report
+        shell: bash
+        run: |
+          lake build --wfail 2>&1 | tee lean-build.log
+          grep -F "'psd_product_inequality' depends on axioms: [propext, Classical.choice, Quot.sound]" lean-build.log

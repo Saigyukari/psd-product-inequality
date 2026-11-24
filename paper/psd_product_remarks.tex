@@ -1,0 +1,398 @@
+% Compile twice with pdflatex psd_product_remarks.tex.
+\documentclass[10pt,twoside,reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern,amsmath,amssymb,amsthm}
+\usepackage[letterpaper,textwidth=6.2in,textheight=9in,centering]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{corollary}[theorem]{Corollary}
+\numberwithin{equation}{section}
+\newcommand{\C}{\mathbb C}
+\newcommand{\T}{\mathbb T}
+\newcommand{\re}{\operatorname{Re}}
+\newcommand{\dd}{\,\mathrm{d}}
+\setlength{\emergencystretch}{1em}
+\title[Remarks on a PSD product inequality]{Remarks on a product inequality for positive semidefinite matrices}
+\author{Saigyukari}
+\date{}
+\pagestyle{headings}
+
+\begin{document}
+\begin{abstract}
+We characterize equality in the product inequality for positive semidefinite
+matrices. The geometric-mean Poisson estimate in the proof gives an explicit
+deficit for unequal diagonals and an integral inequality in the large-order
+limit. We also describe how to apply the harmonic minorant, finite difference,
+and logarithmic-derivative comparisons to related problems.
+\end{abstract}
+\maketitle
+
+\section{Strengthenings and corollaries}
+
+Theorem~1 of \cite{main} states that for a complex positive semidefinite matrix
+\(A=(a_{ij})\) of order \(n\), with \(x_i=a_{ii}\),
+\begin{equation}\label{eq:main}
+ \prod_{i,j}|1-a_{ij}|\le \prod_i|1-x_i^n|.
+\end{equation}
+Write \(S_m(z)=\sum_{k=0}^{m-1}z^k\) and \(\mu_n=\{z\in\C:z^n=1\}\).
+The diagonal-cancelled inequality is
+\(\prod_{i\ne j}|1-a_{ij}|\le\prod_i S_n(x_i)\).
+
+For \(n\ge3\) and \(0\le x<1\) the proof uses
+\begin{equation}\label{eq:weight}
+ D_m(x)=1-x^{2m}-m(1-x^2)x^{m-1},\qquad
+ w_n(x)=\frac{(1-x^n)^2}{D_n(x)},\qquad
+ p_k(x)=x^{k/2}\sqrt{\frac{D_{n-k}(x)}{D_n(x)}} .
+\end{equation}
+Here \(m\ge2\), \(1\le k\le n-2\), \(w_n(0)=1\), and \(p_k(0)=0\).
+The minorant is \(h_n(x,y,z)=1+2\sum_{k=1}^{n-2}p_k(x)p_k(y)\re(z^k)\).
+For \(P(\zeta)=\re((1+\zeta)/(1-\zeta))\) on the open unit disk put
+\[
+ R(x,y,z)=\sqrt{w_n(x)w_n(y)}\,P(\sqrt{xy}\,z)-h_n(x,y,z).
+\]
+The following estimate records the strictness supplied by the two lowest
+coefficients of the Fejér expansion in \cite{main}.
+
+\begin{proposition}\label{prop:poisson}
+If \(A\succeq0\), \(n\ge3\), and \(0\le x_i<1\), then
+\begin{equation}\label{eq:poisson}
+ \sum_{i,j}\sqrt{w_n(x_i)w_n(x_j)}\,P(a_{ij})
+ \ \ge\ n\sum_i w_n(x_i)P(x_i^n).
+\end{equation}
+The difference bounds the sum over ordered off-diagonal pairs of lower bounds
+for \(R(x_i,x_j,z)\) on the closed unit disk. Every pair with unequal radii
+has a positive lower bound.
+\end{proposition}
+
+\begin{proof}
+Choose unit vectors \(u_i\) with \(a_{ij}=\sqrt{x_ix_j}\,c_{ij}\) and
+\(c_{ij}=\langle u_i,u_j\rangle\), taking any unit vector when \(x_i=0\).
+Equal-radius contact on \(\mu_n\setminus\{1\}\) and averaging over \(\mu_n\)
+give
+\[
+ w_n(x)P(x)-h_n(x,x,1)=n\bigl(w_n(x)P(x^n)-1\bigr).
+\]
+Indeed the Poisson series retains the frequencies divisible by \(n\), and
+the average of the minorant is \(1\). The difference in \eqref{eq:poisson}
+therefore equals
+\begin{equation}\label{eq:sumgap}
+ 2\sum_{k=1}^{n-2}\left\|\sum_i p_k(x_i)u_i^{\otimes k}\right\|^2
+        +\sum_{i\ne j}R(x_i,x_j,c_{ij}).
+\end{equation}
+All terms are nonnegative by the geometric-mean minorant.
+
+For positive \(x,y\) write \(a=-\log x\), \(b=-\log y\),
+\(c=(a+b)/2\), \(d=(a-b)/2\), and
+\[
+ H_s(q)=\sinh(sq)-s\sinh q,\qquad U_s=\sqrt{H_s(a)H_s(b)}
+ \quad(s\ge1).
+\]
+The factorization of \cite{main} gives on the circle
+\[
+ (\cosh c-\re z)U_n R(x,y,z)
+ \ \ge\ B_1|S_n(z)|^2+B_2|S_{n-1}(z)|^2,\qquad
+ B_1=\tfrac12U_2,\quad B_2=U_2(\cosh d-1).
+\]
+Since \(|S_n-S_{n-1}|=1\) there, weighted Cauchy--Schwarz bounds
+the right side below by \(B_1B_2/(B_1+B_2)\) for \(a\ne b\).
+The minimum principle extends the resulting bound to the disk:
+\begin{equation}\label{eq:stability}
+ R(x,y,z)\ \ge\
+ \frac{U_2(\cosh d-1)}{(2\cosh d-1)(\cosh c+1)U_n},
+ \qquad |z|\le1.
+\end{equation}
+For \(x=0<y\) the defect is \(\sqrt{w_n(y)}-1>0\). In fact
+\[
+ (1-y^n)^2-D_n(y)
+ =y^{n-1}\bigl[n(1-y^2)-2y(1-y^n)\bigr]
+ \ \ge\ n y^{n-1}(1-y)^2>0
+\]
+by \(1-y^n\le n(1-y)\).
+\end{proof}
+
+On any interval \([\epsilon,1-\epsilon]\), \(0<\epsilon<1/2\), the
+right side of \eqref{eq:stability} is at least a positive constant depending
+on \(n,\epsilon\) times \((x-y)^2\). This follows from
+\(\cosh d-1\ge d^2/2\), \(|\log x-\log y|\ge|x-y|\), and compactness
+of the remaining positive factors. Thus \eqref{eq:poisson} controls the
+variance of the diagonal on compact subintervals of \((0,1)\).
+
+\medskip
+\noindent
+The diagonal deficit forces equality to occur at a common radius.
+The surviving tensor conditions then determine the phases.
+
+\begin{theorem}\label{thm:equality}
+For \(n=1\), equality in \eqref{eq:main} always holds. For \(n=2\), it holds
+if and only if some \(x_i=1\), or \(x_1=x_2\) and \(a_{12}=-x_1\).
+For \(n\ge3\), it holds if and only if \(A=0\), some \(x_i=1\), or
+\[
+ P_0 A P_0^{\mathsf T}=(d_0\,\omega^{i-j})_{i,j=1}^n
+\]
+for a permutation matrix \(P_0\), a real \(d_0>0\), and a primitive
+\(n\)th root of unity \(\omega\).
+\end{theorem}
+
+\begin{proof}
+In order one the products agree. A unit diagonal entry makes both products
+zero. In order two, after
+cancelling the diagonal, the two bounds are
+\[
+ |1-a_{12}|^2\le (1+\sqrt{x_1x_2})^2\le (1+x_1)(1+x_2).
+\]
+Equality in the second forces equal diagonals. Equality in the first then
+forces \(a_{12}=-x_1\), by equality in the triangle inequality and
+\(|a_{12}|\le\sqrt{x_1x_2}\).
+
+Suppose \(n\ge3\) and first take \(x_i<1\) for all \(i\). Along the
+backward radial flow \(\dot x_i=x_iw_n(x_i)\) with the \(u_i\) fixed, the gap
+\(Q=\sum_i\log(1-x_i^n)-\sum_{i,j}\log|1-a_{ij}|\) increases from zero.
+Its derivative \(2\dot Q\) is the difference in \eqref{eq:poisson} with
+the arithmetic mean in the first sum. The arithmetic mean dominates the
+geometric mean, and \(P\) is positive. Equality at the endpoint implies
+\(\dot Q=0\) there, since the gap vanishes along the flow. By
+\eqref{eq:sumgap} and \eqref{eq:stability} all radii coincide.
+If their common value is zero then \(A=0\).
+
+At a positive common radius, all \(p_k(x)\) are positive. Thus
+\(\sum_i u_i^{\otimes k}=0\) for \(1\le k\le n-2\), and every off-diagonal
+defect vanishes. At equal radii the numerator of the circle defect is
+exactly \(B_1|S_n(z)|^2\). The strong minimum principle gives positivity
+inside the disk, so \(c_{ij}\in\mu_n\setminus\{1\}\) for \(i\ne j\).
+Since \(c_{ii}=1\), we also have
+\[
+ \left\|\sum_i u_i^{\otimes(n-1)}\right\|^2
+   =\sum_{i,j}c_{ij}^{\,n-1}=\overline{\sum_{i,j}c_{ij}}=0.
+\]
+The last sum vanishes by the \(k=1\) tensor condition.
+
+To see the phase rigidity from these moments, apply any complex linear
+functional \(\ell\) on the finite span of the \(u_i\).
+The first \(n-1\) power sums of \(\ell(u_i)\) vanish.
+Newton's identities recursively give zero for their first \(n-1\)
+elementary symmetric functions. Hence \(\prod_i(T-\ell(u_i))=T^n-\gamma_\ell\)
+for some scalar \(\gamma_\ell\). If \(\ell(u_1)=0\), then
+\(\gamma_\ell=0\) and \(\ell\) vanishes on all \(u_i\).
+Thus all \(u_i\) lie in the line of \(u_1\). A functional taking \(u_1\) to
+\(1\) now shows that their phase multipliers are the \(n\) distinct roots
+of \(T^n-1\).
+
+For general diagonals excluding \(1\), normalize by
+\(b_{ij}=a_{ij}/(t_it_j)\), \(t_i=\max(1,x_i)\).
+Equality in the original bound requires equality in the cancelled bound
+for \(B\), as well as in each pair estimate
+\[
+ t_it_j|1-b_{ij}|^2-|1-a_{ij}|^2
+ =(t_it_j-1)\bigl(1-|a_{ij}|^2/(t_it_j)\bigr)\ge0 .
+\]
+Indeed the normalized factors are all positive, and the geometric-sum
+factors change by exactly \(\prod_i t_i^{n-1}\). If \(B=0\) then \(A=0\).
+Otherwise the diagonals of \(B\) equal some \(x\in(0,1)\), so each \(x_i\)
+equals \(x\) or \(x^{-1}\). A mixed pair has \(t_it_j=x^{-1}>1\) and
+\(|a_{ij}|^2\le x_i x_j=1\), giving strictness. Consequently all original
+diagonals coincide and \(A\) is a scalar multiple of \(B\).
+Conversely the zero matrix gives equality and a regular phase matrix
+satisfies \(\prod_j(1-d_0\,\omega^{i-j})=1-d_0^n\) in each row.
+\end{proof}
+
+\begin{corollary}[Schur powers]
+For every integer \(m\ge1\), a positive semidefinite \(A\) satisfies
+\(\prod_{i,j}|1-a_{ij}^{\,m}|\le\prod_i|1-a_{ii}^{\,mn}|\).
+\end{corollary}
+
+\begin{proof}
+The entrywise power \(A^{\circ m}\) is the Gram matrix of the \(m\)th
+tensor powers of Gram vectors for \(A\). Apply \eqref{eq:main} to it.
+\end{proof}
+
+\medskip
+\noindent
+\textit{Real symmetric matrices.}
+For \(n\ge2\) and \(0\le x_i\le1\), all factors \(1-a_{ij}\) are
+nonnegative. Put \(s_i=1+x_i/(n-1)\) and \(q_i=s_i^{-1/2}\).
+Positive semidefiniteness and Cauchy--Schwarz give
+\[
+ \sum_{i\ne j}q_iq_j(1-a_{ij})
+ \le \Big(\sum_iq_i\Big)^2+\sum_i(x_i-1)q_i^2
+ \le\sum_i(n-1+x_i)q_i^2=n(n-1).
+\]
+Apply AM--GM to the scaled off-diagonal factors to obtain
+\[
+ \prod_{i\ne j}(1-a_{ij})
+ \le \prod_i\left(1+\frac{x_i}{n-1}\right)^{n-1}.
+\]
+For unit diagonal the bound is attained by the real simplex with
+\(a_{ij}=-1/(n-1)\) off the diagonal. Its product is
+\((1+1/(n-1))^{n(n-1)}<e^n\). The complex regular phase matrix with unit
+diagonal attains the cancelled bound \(n^n\), which is strictly larger
+than the real optimum for \(n\ge3\).
+
+\medskip
+\noindent
+\textit{Continuous scaling limit.}
+Fix \(A,B>0\) and \(\tau\in\mathbb R\). Put
+\[
+ C=\frac{A+B}{2},\qquad
+ V(A)=\frac{\cosh A-1}{\sinh A-A},\qquad
+ J(s)=\sqrt{(\sinh(As)-As)(\sinh(Bs)-Bs)} .
+\]
+The geometric-mean minorant gives
+\begin{equation}\label{eq:limit}
+ \int_0^1 J(s)\cos((1-s)\tau)\dd s
+ \ \le\ \frac{C\sqrt{V(A)V(B)}}{C^2+\tau^2}\,J(1).
+\end{equation}
+Indeed take \(x=e^{-A/n}, y=e^{-B/n}, z=e^{i\tau/n}\).
+Uniformly for \(0\le m\le n\),
+\(H_m(A/n)=\sinh(Am/n)-(m/n)n\sinh(A/n)\)
+converges to \(\sinh(Am/n)-Am/n\) in the sense that their difference tends
+uniformly to zero. Thus \(U_m\) differs uniformly from \(J(m/n)\) by a
+quantity tending to zero, and \(h_n/n\) converges to twice the integral
+divided by \(J(1)\). The two weights tend to \(V(A),V(B)\), and
+\(P(e^{-C/n+i\tau/n})/n\to 2C/(C^2+\tau^2)\).
+The limit with the arithmetic mean has \((V(A)+V(B))/2\) in place of the
+geometric mean.
+
+\section{Analytical and exact verification methods}
+
+\noindent
+\textit{Radial deformation and a harmonic minorant.}
+For vectors of squared radii \(x_i\), write their Gram entries as
+\(\sqrt{x_ix_j}\,\langle u_i,u_j\rangle\) with unit \(u_i\).
+A radial deformation \(\dot x_i=x_i w(x_i)\) holds the normalized Gram
+matrix fixed. For the logarithmic product gap the derivative is
+\[
+ 2\dot Q=\sum_{i,j}\frac{w(x_i)+w(x_j)}2
+         P(\sqrt{x_ix_j}\,\langle u_i,u_j\rangle)
+         -n\sum_i w(x_i)P(x_i^n).
+\]
+To bound the first sum, seek a minorant for the scalar kernel on
+\((x,y,z)\in[0,1)^2\times\T\) whose constant coefficient is
+\((\eta(x)+\eta(y))/2\) and whose other terms are
+\(K_k(x,y)\re(z^k)\), with \(K_k(x,y)=\langle v_k(x),v_k(y)\rangle\).
+The minimum principle extends the comparison to the disk.
+The sum of each Fourier term is the squared norm of
+\(\sum_i v_k(x_i)\otimes u_i^{\otimes k}\).
+In order \(n\) a polynomial of degree \(<n\) with contact at the nontrivial
+\(n\)th roots on the equal-radius slice leaves only the on-diagonal
+difference at \(z=1\). Averaging over the roots computes this difference as
+\(n(w(x)P(x^n)-\eta(x))\), exactly the correction needed in \(2\dot Q\).
+If \(w\) is positive and continuous at zero, the separated backward flow
+reaches zero in the limit \(t\to-\infty\), where \(Q\) vanishes.
+
+\medskip
+\noindent
+\textit{Constant term and logarithmic radii.}
+Normalizing the zeroth coefficient to \(1\) makes its matrix sum \(n^2\).
+A useful scalar ansatz is \(p_k(x)^2=x^kD_{n-k}(x)/D_n(x)\),
+so that the same formula gives \(p_0(x)=1\). Whenever
+\(D_m(x)=x^m F_m(-\log x)\), the powers cancel identically on passing to
+\(a=-\log x,\ b=-\log y\):
+\[
+ p_k(x)p_k(y)=
+ \frac{\sqrt{F_{n-k}(a)F_{n-k}(b)}}{\sqrt{F_n(a)F_n(b)}} .
+\]
+Here \(F_m=2H_m\). The geometric-mean radius becomes \(e^{-c}\),
+\(c=(a+b)/2\), and the Poisson denominator is
+\(2e^{-c}(\cosh c-\re z)\) on \(\T\). Multiplying by it acts on Fourier
+coefficients by adjacent shifts, with the same coefficients at every index.
+
+\medskip
+\noindent
+\textit{Fejér squares and Green kernels.}
+Given \(L_0=0\), write \(B_1=L_1\) and
+\(B_j=L_j-2L_{j-1}+L_{j-2}\) for \(j\ge2\).
+Twice summing the differences gives \(L_m=\sum_{j=1}^m(m-j+1)B_j\).
+Because \(|S_r(z)|^2\) has Fourier coefficients \(r-|k|\) for \(|k|<r\)
+on \(\T\), it follows that
+\[
+ L_n+2\sum_{k=1}^{n-1}L_{n-k}\re(z^k)
+ =\sum_{j=1}^n B_j|S_{n-j+1}(z)|^2.
+\]
+In the product problem \(2L_m=\Delta_c U(m)\), where
+\(\Delta_h F(s)=F(s+1)+F(s-1)-2\cosh(h)F(s)\).
+For \(h>0\) put \(K_h(u)=\sinh(h(1-|u|))/h\) on \([-1,1]\) and put
+\(K_0(u)=1-|u|\). Integration by parts on the two halves gives
+\[
+ \Delta_h F(s)=\int_{-1}^1 K_h(u)(F''-h^2 F)(s+u)\dd u.
+\]
+The endpoint derivatives are \(1,-1\), and the derivative jump at \(0\)
+is \(-2\cosh h\). For \(m\ge3\), \(2B_{m+1}=\Delta_0\Delta_c U(m)\).
+The doubled integral uses \(K_0(u)K_c(v)\ge0\) against
+\(U^{(4)}-c^2U''\) at \(m+u+v\). One differential sign on a half-line
+therefore supplies every interior second difference in every order.
+
+\medskip
+\noindent
+\textit{Ratios of generating-function coefficients.}
+If \(h_k(X)\) are the complete homogeneous symmetric polynomials, their
+generating function \(\prod_i(1-X_i t)^{-1}\) gives
+\(H_m(q)=H_2(q)h_{m-2}(e^q,1,1,e^{-q})\) for \(m\ge2\).
+For positive coordinates the \(h_k\) are log-concave in \(k\).
+Indeed adjoining a variable \(z\) changes \(f_k\) to \(g_k=f_k+zg_{k-1}\),
+and \(g_k^2-g_{k-1}g_{k+1}=g_k f_k-g_{k-1}f_{k+1}\ge0\) by expanding the
+sums and comparing the successive ratios of \(f_k\).
+Differentiating the generating function in a coordinate \(z\) gives
+\(\partial_z\log h_k=\sum_{j=1}^k z^{j-1}h_{k-j}/h_k\).
+Each summand is nondecreasing in \(k\) by log-concavity, so
+\(h_{k+1}/h_k\) is nondecreasing in every coordinate.
+Homogeneity removes the common exponential scale. For example, for
+\(r=\tfrac12\log(H_{n+1}/H_{n-1})\), the ratio \(e^{2(r(q)-q)}\) becomes
+\(h_{n-1}/h_{n-3}\) at \((1,e^{-q},e^{-q},e^{-2q})\) and decreases toward \(1\).
+
+\medskip
+\noindent
+\textit{Log-concave density comparison.}
+A moving family of densities can encode the first two derivatives of a
+logarithmic quotient through its mean and variance. In the main proof
+the normalized density \(g_q\) satisfies
+\(\partial_q g_q=-\partial_v(J_q g_q)\), with vanishing boundary flux.
+The integral-to-density ratios of a log-concave density make \(J_q\)
+nonnegative and nondecreasing. Integration by parts then identifies
+the parameter derivatives of the mean and variance as
+\(\mathbb E[J_q]\) and \(2\operatorname{Cov}(v,J_q(v))\), respectively.
+These signs give two of the four logarithmic-derivative bounds used in
+Proposition~4.4 of \cite{main}.
+
+\medskip
+\noindent
+\textit{Scalar differential comparison.}
+For \(k(x)=x^2\sinh x/(x\cosh x-\sinh x)\) and
+\(\kappa(z)=k(\sqrt z)\), the relation
+\(2z\kappa'=z+3\kappa-\kappa^2\) implies concavity of \(\kappa\).
+The resulting chord bound for the logarithm of a density ratio,
+followed by the exponential tangent inequality, compares derivatives
+of the reciprocal normalizing integrals. Together these two
+comparisons control the fourth derivative in every order.
+
+\section{Connections to mathematical physics}
+
+For vectors \(\psi_i\) with \(\|\psi_i\|\le1\), the overlaps
+\(a_{ij}=\langle\psi_i\mid\psi_j\rangle\) give a dimension-independent
+bound. Among nonzero configurations with all norms strictly below one,
+equality in order \(n\ge3\) requires a common ray with equally spaced
+phases of its representatives. The phase information here is attached
+to the chosen vectors. A cyclic Bargmann product such as
+\(a_{ij}a_{jk}a_{ki}\) is invariant under independent rephasing.
+
+For rank one, \(a_{ij}=z_i\overline z_j\) with \(|z_j|<1\).
+The term \(-\log|1-z_i\overline z_j|\) is the logarithmic interaction
+with the inverted point \(1/\overline z_j\), up to the additive
+\(-\log|z_j|\) for \(z_j\ne0\). It is the negative of the image term in
+the Dirichlet disk Green function
+\(-\log|z_i-z_j|+\log|1-z_i\overline z_j|\).
+The higher-rank overlap energy and its minorant share the
+linear-programming mechanism of Cohn and Kumar \cite{CK}.
+Positive Fourier kernels in two radii take the place of nonnegative
+scalar coefficients, and contact occurs at the equal-radius regular polygon.
+
+\begin{thebibliography}{9}
+\bibitem{CK}
+H.~Cohn and A.~Kumar, \textit{Universally optimal distribution of points on
+spheres}, J. Amer. Math. Soc. \textbf{20} (2007), 99--148.
+
+\bibitem{main}
+Saigyukari, \textit{A product inequality for positive semidefinite
+matrices}, accompanying note.
+\end{thebibliography}
+\end{document}

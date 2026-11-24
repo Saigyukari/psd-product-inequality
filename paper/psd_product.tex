@@ -1,0 +1,695 @@
+% Compile twice with pdflatex psd_product.tex to resolve the references.
+\documentclass[10pt,twoside,reqno]{amsart}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage[letterpaper,textwidth=6.2in,textheight=9in,centering]{geometry}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{proposition}{Proposition}[section]
+\newtheorem{lemma}[proposition]{Lemma}
+\numberwithin{equation}{section}
+\newcommand{\C}{\mathbb C}
+\newcommand{\R}{\mathbb R}
+\newcommand{\T}{\mathbb T}
+\newcommand{\Real}{\operatorname{Re}}
+\newcommand{\dd}{\,\mathrm{d}}
+\setlength{\emergencystretch}{1em}
+
+\title[A product inequality for positive semidefinite matrices]
+      {A product inequality for positive semidefinite matrices}
+\author[Saigyukari]{Saigyukari}
+\date{}
+\pagestyle{headings}
+
+\begin{document}
+\begin{abstract}
+For every complex positive semidefinite matrix of order \(n\), we bound the
+product of the distances of its entries from \(1\) by the corresponding
+product for the \(n\)th powers of its diagonal entries. The bound holds in
+every rank and is attained by a rank-one matrix of roots of unity.
+A radial deformation reduces the inequality to a Poisson-kernel estimate
+whose harmonic minorant has explicit rank-one Fourier coefficients in
+logarithmic radii. A sum-of-squares factorization reduces positivity in every
+order to the same fourth-order differential inequality. We prove this inequality analytically by a log-concave density comparison
+and a scalar differential equation. The complete proof is formalized in
+Lean~4 with Mathlib and uses only Lean's standard axioms.
+\end{abstract}
+\maketitle
+
+\section{Introduction and diagonal reduction}
+
+\begin{theorem}\label{thm:product}
+For every \(n\ge1\) and every positive semidefinite \(A=(a_{ij})\in\C^{n\times n}\),
+\begin{equation}\label{eq:product}
+ \prod_{i,j=1}^{n}|1-a_{ij}|
+ \ \le\ \prod_{i=1}^{n}|1-a_{ii}^{\,n}|.
+\end{equation}
+\end{theorem}
+
+Equality holds for \(a_{ij}=d\,\omega^{i-j}\), where \(d\ge0\) and
+\(\omega\) is a primitive \(n\)th root of unity. Indeed, \(A=d\,u u^*\)
+with \(u_i=\omega^i\), and \(\prod_j(1-d\,\omega^{i-j})=1-d^n\) in each row.
+
+Write \(d_i=a_{ii}\) and \(S_m(z)=\sum_{\ell=0}^{m-1}z^\ell\).
+If any \(d_i=1\), both sides of \eqref{eq:product} vanish. Otherwise division
+by \(\prod_i|1-d_i|\) reduces it to
+\begin{equation}\label{eq:cancel}
+ \prod_{i\ne j}|1-a_{ij}|\ \le\ \prod_i S_n(d_i).
+\end{equation}
+The latter inequality extends to unit diagonal entries by continuity, using
+\(\rho A\to A\) through values with \(\rho d_i\ne1\) for every \(i\).
+Order one is an identity. In order two, positivity gives
+\(|a_{12}|^2\le d_1d_2\), whence
+\[
+ |1-a_{12}|^2\le(1+\sqrt{d_1d_2})^2\le(1+d_1)(1+d_2).
+\]
+The difference in the last inequality is \((\sqrt{d_1}-\sqrt{d_2})^2\).
+
+For \(n\ge3\) put \(t_i=\max(1,d_i)\) and \(b_{ij}=a_{ij}/(t_it_j)\).
+The matrix \(B=(b_{ij})\) is positive semidefinite by diagonal congruence.
+For \(T=t_i t_j\), the bound \(|a_{ij}|^2\le d_i d_j\le T\) gives
+\[
+ T|1-b_{ij}|^2-|1-a_{ij}|^2=(T-1)(1-|a_{ij}|^2/T)\ge0.
+\]
+If \(d_i>1\), then \(b_{ii}=1/d_i\), so reversing the geometric sum gives
+\(S_n(d_i)=t_i^{n-1}S_n(b_{ii})\); the same identity holds when \(d_i\le1\).
+Multiplication over the ordered pairs \(i\ne j\) contributes
+\(\prod_{i\ne j}\sqrt{t_i t_j}=\prod_i t_i^{\,n-1}\). Thus
+\eqref{eq:cancel} for \(B\) implies it for \(A\).
+Since \(0\le b_{ii}\le1\), applying the bound first to \(\rho B\),
+\(0<\rho<1\), and letting \(\rho\uparrow1\) reduces the proof to
+\(0\le a_{ii}<1\).
+
+\section{Radial deformation and harmonic minorants}
+
+Write \(x_i=a_{ii}<1\) and \(a_{ij}=\sqrt{x_i x_j}\,c_{ij}\), where
+\(c_{ij}=\langle u_i,u_j\rangle\) for unit vectors \(u_i\). This follows
+from a Gram representation of \(A\); at a zero Gram vector any unit direction
+will do. Let \(P(\zeta)=\Real((1+\zeta)/(1-\zeta))\) for \(|\zeta|<1\).
+Hold the \(u_i\) fixed and evolve \(\dot x_i=x_i w(x_i)\), where \(w\) is
+positive and continuous on \([0,1)\) and locally Lipschitz there. With the
+prescribed radii at time zero, a positive coordinate satisfies
+\[
+ -t=\int_{x_i(t)}^{x_i(0)}\frac{\dd u}{u w(u)}.
+\]
+The integral diverges at zero because \(w(0)>0\). Thus the backward flow
+exists for all \(t\le0\) and tends to zero. A zero coordinate stays zero.
+
+Set \(w_i=w(x_i)\) and
+\(Q=\sum_i\log(1-x_i^n)-\sum_{i,j}\log|1-a_{ij}|\).
+Along the flow \(\dot a_{ij}=(w_i+w_j)a_{ij}/2\).
+Using \(2\Real(\zeta/(1-\zeta))=P(\zeta)-1\) and
+\(\sum_{i,j}(w_i+w_j)/2=n\sum_iw_i\), differentiation gives
+\begin{equation}\label{eq:flow}
+ 2\dot Q=\sum_{i,j}\frac{w_i+w_j}{2}P(a_{ij})
+               -n\sum_i w_i P(x_i^n).
+\end{equation}
+A harmonic minorant can control the two sums at the same time.
+
+\begin{proposition}\label{prop:flow}
+Let \(\eta\) be real-valued on \([0,1)\), and let \(v_k(x)\) take values in
+real Hilbert spaces, \(1\le k\le n-2\). Suppose
+\[
+ h(x,y,z)=\frac{\eta(x)+\eta(y)}2+
+       \sum_{k=1}^{n-2}\langle v_k(x),v_k(y)\rangle\,\Real(z^k)
+ \ \le\ \frac{w(x)+w(y)}2\,P(\sqrt{xy}\,z)
+\]
+for \(0\le x,y<1\), \(z\in\T=\{z:|z|=1\}\), with equality if \(x=y\)
+and \(z^n=1\), \(z\ne1\). Then \eqref{eq:product} holds in order \(n\).
+\end{proposition}
+
+\begin{proof}
+Both sides are harmonic on the disk and continuous on its closure.
+The minimum principle extends the bound to \(|z|\le1\). For every \(k\),
+complexifying the real coefficient space in the tensor product gives
+\[
+ \sum_{i,j}\langle v_k(x_i),v_k(x_j)\rangle\,\Real(c_{ij}^k)
+ =\Big\|\sum_i v_k(x_i)\otimes u_i^{\otimes k}\Big\|^2\ge0.
+\]
+Consequently \(\sum_{i,j}h(x_i,x_j,c_{ij})\ge n\sum_i\eta(x_i)\).
+To keep the exact diagonal contribution, let \(\mu_n=\{z:z^n=1\}\).
+Summing \(P(xz)=1+2\Real\sum_{\ell\ge1}x^\ell z^\ell\) over \(\mu_n\)
+retains precisely the multiples of \(n\), so \(\sum_{z\in\mu_n}P(xz)=nP(x^n)\).
+Likewise \(\sum_{z\in\mu_n}h(x,x,z)=n\eta(x)\). All the differences except
+the one at \(z=1\) vanish by hypothesis. Hence
+\[
+ w(x)P(x)-h(x,x,1)=n\bigl(w(x)P(x^n)-\eta(x)\bigr).
+\]
+Adding these diagonal differences to the lower bound for the sum of \(h\)
+shows that the first sum in \eqref{eq:flow} is at least \(n\sum_i w_iP(x_i^n)\).
+Thus \(\dot Q\ge0\). Since \(Q\to0\) along the backward flow,
+\(Q(0)\ge0\), which is \eqref{eq:product} for the reduced matrix.
+Section~1 gives the result for all diagonal entries.
+\end{proof}
+
+We use one scalar for each nonconstant Fourier coefficient. For \(m\ge2\) set
+\begin{equation}\label{eq:weight}
+ \begin{split}
+ D_m(x)&=1-x^{2m}-m(1-x^2)x^{m-1},\qquad
+ w_n(x)=\frac{(1-x^n)^2}{D_n(x)},\\
+ p_k(x)&=x^{k/2}\sqrt{\frac{D_{n-k}(x)}{D_n(x)}},\qquad
+ h_n(x,y,z)=1+2\sum_{k=1}^{n-2}p_k(x)p_k(y)\,\Real(z^k).
+ \end{split}
+\end{equation}
+Here \(w_n(0)=1\) and \(p_k(0)=0\). We shall prove on \(\T\) the stronger
+geometric-mean inequality
+\begin{equation}\label{eq:minorant}
+ h_n(x,y,z)\le\sqrt{w_n(x)w_n(y)}\,P(\sqrt{xy}\,z).
+\end{equation}
+
+\section{Logarithmic radii and a sum of squares}
+
+For \(0<x,y<1\) put \(a=-\log x\), \(b=-\log y\), \(c=(a+b)/2\),
+\(d=(a-b)/2\). For \(q>0\) and real \(s\ge1\) write
+\[
+ H_s(q)=\sinh(sq)-s\sinh q,\qquad
+ W_n(q)=\frac{\cosh(nq)-1}{H_n(q)},\qquad
+ U_s=\sqrt{H_s(a)H_s(b)},\qquad U_0=0 .
+\]
+We have \(U_1=0\) and \(H_s(q)>0\) for \(s>1\), since \(\sinh q/q\)
+is strictly increasing for \(q>0\). The identities
+\[
+ D_m(e^{-q})=2e^{-mq}H_m(q),\qquad w_n(e^{-q})=W_n(q)
+\]
+also establish the positivity of the denominators in \eqref{eq:weight}.
+In particular \(w_n\) is smooth on \([0,1)\).
+For \(z=e^{i\theta}\), formula \eqref{eq:weight} and the Poisson kernel become
+\[
+ h_n=1+2\sum_{k=1}^{n-2}\frac{U_{n-k}}{U_n}\cos(k\theta),\qquad
+ P(e^{-c}z)=\frac{\sinh c}{\cosh c-\cos\theta}.
+\]
+
+Multiplication by the Poisson denominator expresses the remainder in squares
+of the geometric sums from Section~1. Put \(L_0=0\) and define
+\begin{align}
+ L_m&=\tfrac12(U_{m+1}+U_{m-1})-\cosh c\,U_m \quad (m\ge1), \notag\\
+ B_1&=L_1,\qquad B_j=L_j-2L_{j-1}+L_{j-2}\quad (j\ge2). \label{eq:weights}
+\end{align}
+For a real number \(M\) let
+\[
+ R_M=M P(e^{-c}z)-h_n,\qquad
+ E_n=M\sinh c\,U_n-\tfrac12(U_{n+1}-U_{n-1}).
+\]
+
+\begin{proposition}\label{prop:squares}
+For every \(z=e^{i\theta}\) and every \(M\),
+\begin{equation}\tag{A}\label{eq:squares}
+ (\cosh c-\cos\theta)U_n R_M
+   =E_n+\sum_{j=1}^n B_j\,|S_{n-j+1}(z)|^2 .
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+In \(U_n h_n\) the coefficient of \(z^k\) is \(U_{n-|k|}\) for
+\(|k|\le n-2\), and zero otherwise. Multiplying by
+\(\cos\theta-\cosh c=(z+z^{-1})/2-\cosh c\) gives the coefficient
+\(L_{n-|k|}\) for \(1\le|k|\le n-1\), including the endpoint because
+\(U_0=U_1=0\). The constant becomes \(U_{n-1}-\cosh c\,U_n\).
+Adding \(M\sinh c\,U_n\) changes this constant to \(E_n+L_n\).
+
+By \eqref{eq:weights}, \(\sum_{j=1}^m B_j=L_m-L_{m-1}\).
+Summing once more gives
+\(L_m=\sum_{j=1}^m(m-j+1)B_j\). Since
+\(|S_\ell(z)|^2=\sum_{|k|<\ell}(\ell-|k|)z^k\),
+the coefficient of \(z^k\) in the sum of squares is
+\(\sum_{j=1}^{n-|k|}(n-|k|-j+1)B_j=L_{n-|k|}\) for \(|k|<n\).
+This matches every coefficient, including the constant after adding \(E_n\).
+\end{proof}
+
+\section{Positivity of the coefficients}
+
+The constant remainder in \eqref{eq:squares} is controlled by the
+variation of one ratio of hyperbolic functions.
+
+\begin{lemma}\label{lem:remainder}
+For \(M=\sqrt{W_n(a)W_n(b)}\), one has \(E_n\ge0\).
+\end{lemma}
+
+\begin{proof}
+Put \(r(q)=\tfrac12\log(H_{n+1}(q)/H_{n-1}(q))\). We first prove
+\begin{equation}\label{eq:lipschitz}
+ r(q)\ge q,\qquad 0\le r'(q)\le1 .
+\end{equation}
+Write \(u=n+1\), \(v=n-1>1\). The coefficients of \(q^{2\ell+1}\) in
+\(H_u,H_v\) are \(\alpha_\ell=(u^{2\ell+1}-u)/(2\ell+1)!\) and
+\(\beta_\ell=(v^{2\ell+1}-v)/(2\ell+1)!\), respectively, for \(\ell\ge1\).
+Up to the positive factor \(u(u^2-1)/(v(v^2-1))\), their ratio is
+\(\sum_{j<\ell}u^{2j}/\sum_{j<\ell}v^{2j}\), with \(j\) starting at zero.
+This weighted mean of the increasing numbers \((u/v)^{2j}\) increases with
+\(\ell\). Pairing indices \(\ell>k\) in \(H_u'H_v-H_uH_v'\) gives the
+terms \(2(\ell-k)(\alpha_\ell\beta_k-\alpha_k\beta_\ell)q^{2\ell+2k+1}\ge0\).
+The series converge absolutely; hence \(r'\ge0\).
+
+Let \(h_k(X)\) denote the complete homogeneous symmetric polynomial,
+defined by \(\sum_{k\ge0}h_k(X)y^k=\prod_i(1-X_i y)^{-1}\).
+Summing the two terms of \(H_m(q)\) separately gives
+\[
+ \sum_{m\ge0} H_m(q)y^m
+ =y\sinh q\left(\frac1{1-2y\cosh q+y^2}-\frac1{(1-y)^2}\right)
+ =\frac{H_2(q)y^2}{(1-e^q y)(1-y)^2(1-e^{-q}y)},
+\]
+where in this series \(H_0(q)=0\) and \(H_2(q)=2(\cosh q-1)\sinh q\).
+Thus \(H_m(q)=H_2(q)h_{m-2}(e^q,1,1,e^{-q})\) for \(m\ge2\).
+Homogeneity now yields
+\begin{equation}\label{eq:homogeneous}
+ e^{2(r(q)-q)}
+ =\frac{h_{n-1}(X)}{h_{n-3}(X)},\qquad
+ X=(1,e^{-q},e^{-q},e^{-2q}).
+\end{equation}
+
+For completeness, the \(h_k\) form a log-concave sequence for positive
+variables. This is an equality for one variable. Adjoining a variable \(z\)
+to a positive log-concave sequence \(f_k\) of complete homogeneous polynomials
+gives \(g_k=\sum_{j=0}^k z^j f_{k-j}=f_k+zg_{k-1}\). Therefore
+\[
+ g_k^2-g_{k-1}g_{k+1}
+ =g_k f_k-g_{k-1}f_{k+1}
+ =z^k f_0f_k+\sum_{j=0}^{k-1}z^j(f_{k-j}f_k-f_{k-1-j}f_{k+1})\ge0,
+\]
+since the successive ratios \(f_i/f_{i-1}\) decrease.
+For any one coordinate \(z\), differentiation of the generating function gives
+\(\partial_z\log h_k=\sum_{j=1}^k z^{j-1}h_{k-j}/h_k\).
+Log-concavity makes each ratio \(h_{k-j}/h_k\) nondecreasing in \(k\).
+Thus \(\partial_z\log(h_{k+1}/h_k)\ge0\), proving coordinatewise
+monotonicity, also at nonnegative coordinates wherever the denominator is
+positive, by continuity.
+
+The quotient in \eqref{eq:homogeneous} is a product of two consecutive such
+ratios. Its coordinates decrease or stay fixed with \(q\), and its limit at
+\(q=\infty\) is \(1\). Hence \(r(q)-q\) decreases to zero, giving the
+remaining bounds in \eqref{eq:lipschitz}.
+
+Finally put \(T(q)=\sqrt{H_{n+1}(q)H_{n-1}(q)}/H_n(q)\). Subtraction gives
+\[
+ H_{n+1}(q)-H_{n-1}(q)
+ =2\sinh q\,\cosh(nq)-2\sinh q,\qquad
+ T(q)\sinh r(q)=W_n(q)\sinh q.
+\]
+For \(u,v>0\) the identity
+\[
+ \frac{\sinh^2((u+v)/2)}{\sinh u\,\sinh v}
+ =1+\frac{\sinh^2((u-v)/2)}{\sinh u\,\sinh v}
+\]
+follows from the hyperbolic addition formulas. Its right side at
+\((r(a),r(b))\) is at most its value at \((a,b)\), since
+\(|r(a)-r(b)|\le|a-b|\), \(r(a)\ge a\), and \(r(b)\ge b\).
+Taking square roots and using the identity for \(T\) gives
+\[
+ \frac{U_{n+1}-U_{n-1}}{2U_n}
+ =\sqrt{T(a)T(b)}\,\sinh\!\left(\frac{r(a)+r(b)}2\right)
+ \le\sqrt{W_n(a)W_n(b)}\,\sinh c .
+\]
+This is the asserted sign of \(E_n\).
+\end{proof}
+
+The first three coefficients involve the endpoint \(U_0=U_1=0\) and
+can be computed directly.
+
+\begin{lemma}\label{lem:first}
+With \(D=\cosh d\), one has
+\(B_1=U_2/2\), \(B_2=U_2(D-1)\), and \(B_3\ge2U_2D(D-1)\).
+\end{lemma}
+
+\begin{proof}
+Write \(C=\cosh c\) and \(A_q=\cosh q\). Since
+\(H_2(q)=2\sinh q(A_q-1)\) and \(H_3(q)=4\sinh^3 q\),
+\[
+ \frac{U_3}{U_2}
+ =2\sqrt{(1+A_a)(1+A_b)}
+ =4\cosh(a/2)\cosh(b/2)=2(C+D).
+\]
+Here \(L_1=U_2/2\) and \(L_2=U_3/2-CU_2\); subtracting \(2L_1\) from
+\(L_2\) gives the formula for \(B_2\).
+Also \(H_4(q)=4\sinh q(2A_q^3-A_q-1)\), so
+\[
+ \frac{H_4(q)}{2H_2(q)}
+ =2A_q^2+2A_q+1=A_q^2+(1+A_q)^2 .
+\]
+Cauchy--Schwarz applied to \((A_a,1+A_a)\) and \((A_b,1+A_b)\) yields
+\[
+ \frac{U_4}{2U_2}\ge A_aA_b+(1+A_a)(1+A_b)
+ =2C^2+2D^2+2CD-1,
+\]
+using \(A_a+A_b=2CD\) and \(A_aA_b=C^2+D^2-1\).
+Expanding \(B_3=L_3-2L_2+L_1\) and substituting the two ratios gives
+\begin{align*}
+ \frac{B_3}{U_2}
+ &=\frac{U_4}{2U_2}-(C+1)\frac{U_3}{U_2}+2C+1\\
+ &\ge 2C^2+2D^2+2CD-1-2(C+1)(C+D)+2C+1=2D(D-1).
+\end{align*}
+\end{proof}
+
+For the remaining coefficients, two centered differences give an integral
+with a nonnegative kernel.
+
+\begin{lemma}\label{lem:integral}
+Put \(U(s)=U_s\) for \(s\ge1\), \(K_0(u)=1-|u|\), and
+\(K_c(u)=\sinh(c(1-|u|))/c\) on \([-1,1]\). For every integer \(m\ge3\),
+\begin{equation}\label{eq:integral}
+ 2B_{m+1}=\int_{-1}^1\int_{-1}^1 K_0(u)K_c(v)
+       (U^{(4)}-c^2U'')(m+u+v)\dd v\dd u .
+\end{equation}
+\end{lemma}
+
+\begin{proof}
+The analytic factorization \(H_s(q)=(s-1)\widetilde H_q(s)\) has
+\(\widetilde H_q(1)=q\cosh q-\sinh q=\int_0^q u\sinh u\dd u>0\).
+Thus \(U(s)=(s-1)\sqrt{\widetilde H_a(s)\widetilde H_b(s)}\) on \(s\ge1\)
+extends real-analytically across \(1\), including the corner
+\(m=3,\ u=v=-1\) in \eqref{eq:integral}.
+
+For \(h=c\) or \(0\), define
+\(\Delta_h F(s)=F(s+1)+F(s-1)-2\cosh h\,F(s)\).
+On each half of \([-1,1]\), \(K_h''=h^2K_h\). Its endpoint values vanish,
+its endpoint derivatives are \(1,-1\), and
+\(K_h'(0+)-K_h'(0-)=-2\cosh h\). Put
+\(G(u)=K_h(u)F'(s+u)-K_h'(u)F(s+u)\). Integration by parts gives
+\[
+ \int_{-1}^1 K_h(u)(F''-h^2F)(s+u)\dd u
+ =[G]_{-1}^{0-}+[G]_{0+}^{1}=\Delta_h F(s).
+\]
+Now \(2L_m=\Delta_c U(m)\), and \(2B_{m+1}=\Delta_0\Delta_c U(m)\).
+Applying the integral formula twice gives \eqref{eq:integral}.
+\end{proof}
+
+The differential expression in \eqref{eq:integral} is independent of the
+matrix order. Its sign follows from two comparisons of logarithmic
+derivatives, one using the moments of a density and the other using a
+scalar differential equation.
+
+\begin{proposition}\label{prop:differential}
+Let \(a,b>0\), \(s>1\), \(c=(a+b)/2\), and \(d=(a-b)/2\).
+For \(F_q(s)=H_s(q)\), put
+\[
+ w_q=\frac{q(\sinh q-qe^{-sq})}{F_q(s)},\qquad
+ \overline w=\frac{w_a+w_b}{2}.
+\]
+Then \(U=\sqrt{F_aF_b}\) satisfies
+\begin{equation}\label{eq:diff-bound}
+ U^{(4)}-c^2 U''\ge \frac{d^2}{3}\,\overline w\,U\ge0.
+\end{equation}
+Equality in \(U^{(4)}-c^2U''\ge0\) holds exactly when \(a=b\).
+\end{proposition}
+
+\begin{proof}
+By symmetry assume \(a\ge b\). Primes on \(F_q\) and its logarithmic
+derivatives refer to \(s\). A bar denotes the average of the values at
+\(a,b\), and \(\Delta\) denotes half their difference.
+
+\medskip\noindent
+\textit{1. Fourth derivative.}
+Set
+\[
+ p_q=\frac{F_q'}{F_q},\qquad A_q=\frac{F_q''}{F_q},\qquad
+ B_q=\frac{F_q'''}{F_q},\qquad C_q=q^2 A_q.
+\]
+Write \(P=\overline p\), \(D=\Delta p\), \(S=P-c\), and
+\(j_q=q^3e^{-sq}/F_q\).
+Since \(\cosh(sq)-\sinh(sq)=e^{-sq}\),
+\[
+ A_q=qp_q+w_q,\qquad B_q=q A_q+j_q,\qquad
+ p_q'=A_q-p_q^2.
+\]
+Here \(w_q>0\) since \(\sinh q\ge q>qe^{-sq}\).
+The function \(F'_q-qF_q\) has derivative \(F_qw_q>0\) on \((1,\infty)\)
+and has value \(q\cosh q-\sinh q>0\) at \(1\).
+Hence \(p_q>q\) and \(S>0\).
+
+The logarithmic derivatives of \(F_a/U\) and \(F_b/U\) are \(D\) and \(-D\).
+The product rule in \(F_q=U(F_q/U)\), divided by \(F_q\) and averaged or
+subtracted, gives
+\[
+ \begin{aligned}
+ U''/U&=\overline A-D^2,\\
+ \Delta B&=3(U''/U)D+3P D'+D''+D^3,\\
+ \overline C&=U^{(4)}/U+6(U''/U)D^2+12PDD'
+                +4DD''+3(D')^2+D^4.
+ \end{aligned}
+\]
+Subtracting \(c^2U''/U\) and eliminating \(D''\) leaves
+\[
+ \frac{U^{(4)}-c^2U''}{U}
+ =\overline C-c^2\overline A-4D\Delta B
+     +(6\overline A+c^2)D^2-3D^4-3(D')^2.
+\]
+Use \(\overline C-c^2\overline A=d^2\overline A+2cd\Delta A\),
+\(\Delta B=c\Delta A+d\overline A+\Delta j\), and
+\(\Delta A=D'+2PD\). This gives
+\[
+ (d^2-4dD+6D^2)\overline A+2c(d-2D)(D'+2PD)
+     +c^2D^2-4D\Delta j-3D^4-3(D')^2.
+\]
+Now \(\overline A=c^2+cS+dD+\overline w\). With
+\(Z=c(d-D)-D'=(2D-d)S-\Delta w\), the expression becomes
+\begin{equation}\label{eq:diff-factor}
+ \begin{split}
+ \frac{U^{(4)}-c^2U''}{U}
+ &=\overline w\bigl((d-2D)^2+2D^2\bigr)-4D\Delta j\\
+ &\quad +(d-D)D(d^2-3dD+3D^2)\\
+ &\quad +Z\bigl(c(d+D)+3D'\bigr)+cS(d^2-2D^2).
+ \end{split}
+\end{equation}
+For the last regrouping, the terms in \(c^2,D'\) are
+\(c^2(d^2-D^2)+2c(d-2D)D'-3(D')^2\);
+substituting \(Z=c(d-D)-D'\) in \eqref{eq:diff-factor} and using
+\(Z=(2D-d)S-\Delta w\) gives the displayed form after collection.
+
+We will prove
+\begin{equation}\label{eq:diff-comparisons}
+ 0\le D\le d,\qquad 0\le D'\le cd/2,\qquad
+ \Delta j\le0,\quad \Delta w\le0 .
+\end{equation}
+Then the second and third terms in \eqref{eq:diff-factor} are nonnegative,
+since \(d^2-3dD+3D^2=(d-3D/2)^2+3D^2/4\).
+If \(D\le d/2\), then \(Z\ge c(d/2-D)\ge0\) and
+\(d^2-2D^2\ge0\). If \(D>d/2\), then \(Z\ge(2D-d)S\ge0\).
+The last two terms together are at least
+\[
+ cS\bigl((2D-d)(d+D)+d^2-2D^2\bigr)=cS dD\ge0.
+\]
+Finally \((d-2D)^2+2D^2=6(D-d/3)^2+d^2/3\), so
+\eqref{eq:diff-comparisons} implies \eqref{eq:diff-bound}.
+
+\medskip\noindent
+\textit{2. A density comparison.}
+For \(q>0\) put
+\[
+ f_q(v)=e^{-sv}(\cosh(\min(v,2q-v))-1)\quad (0\le v\le 2q),
+ \qquad M_q=\int_0^{2q} f_q(v)\dd v.
+\]
+The density is positive on the open interval. Write \(\mu_q\) and
+\(\mathcal V_q\) for the mean and variance with respect to \(f_q/M_q\).
+We have the representation
+\begin{equation}\label{eq:diff-density}
+ F_q(s)=\tfrac12 s(s^2-1)e^{sq}M_q.
+\end{equation}
+Indeed \(K(u)=\cosh(q-|u|)-1\) on \([-q,q]\) satisfies \(K''-K=1\)
+on each half. Its value and derivative vanish at the outer endpoints,
+and \(K'(0+)-K'(0-)=-2\sinh q\).
+Integration by parts on the two halves gives
+\(\int_{-q}^q e^{su}\dd u=(s^2-1)\int_{-q}^q e^{su}K(u)\dd u
+ +2\sinh q\). Substituting \(v=q-u\) proves \eqref{eq:diff-density}.
+Differentiation in \(s\) under the finite integral yields
+\[
+ p_q=q+\ell'-\mu_q,\qquad p_q'=\ell''+\mathcal V_q,qquad
+ \ell(s)=\log(s(s^2-1)).
+\]
+
+Both moments are nondecreasing in \(q\). To see this, write
+\(g_q=f_q/M_q\), \(\lambda=\partial_q M_q/M_q\ge0\).
+The left half of \(f_q\) is independent of \(q\); on the right half
+\(\partial_q f_q=2e^{-sv}\sinh(2q-v)=-2\partial_v f_q-2s f_q\).
+The boundary terms at \(v=q\) cancel when differentiating \(M_q\), and
+\(f_q(2q)=0\), so
+\(\partial_q M_q=2f_q(q)-2s\int_q^{2q}f_q\).
+Define
+\[
+ J_q(v)=
+ \begin{cases}
+  \lambda\displaystyle\frac{\int_0^v f_q(u)\dd u}{f_q(v)},&0<v\le q,\\[6pt]
+  2-(2s+\lambda)\displaystyle\frac{\int_v^{2q} f_q(u)\dd u}{f_q(v)},
+    &q\le v<2q .
+ \end{cases}
+\]
+The formula for \(\partial_q M_q\) gives agreement at \(q\).
+Direct differentiation gives \(\partial_q g_q=-\partial_v(J_q g_q)\)
+on the two halves, with vanishing flux at the outer endpoints.
+
+The function \(f_q\) is log-concave: \(\log(\cosh t-1)\) is increasing
+and concave for \(t>0\), since it equals \(\log 2+2\log\sinh(t/2)\).
+Compose with the concave tent \(\min(v,2q-v)\) and add \(-sv\).
+For a log-concave positive density \(f\) on an interval, the ratio
+\(f(v-h)/f(v)\) is nondecreasing in \(v\) for \(h\ge0\) on its domain,
+by concavity of \(\log f\). Integrating in \(h\), with the integration
+length increasing in \(v\), shows that the left integral-to-density
+ratio is nondecreasing. The same argument with \(f(v+h)/f(v)\) gives
+a nonincreasing right ratio. Thus \(J_q\) is nonnegative and
+nondecreasing. Splitting the integrals at \(q\), differentiating in
+\(q\), and integrating the flux by parts now gives
+\[
+ \partial_q\mu_q=\int_0^{2q} J_q g_q\dd v\ge0,\qquad
+ \partial_q\mathcal V_q=2\int_0^{2q}(v-\mu_q)
+           (J_q(v)-J_q(\mu_q))g_q(v)\dd v\ge0 .
+\]
+The subtraction of \(J_q(\mu_q)\) uses \(\int(v-\mu_q)g_q=0\).
+It follows that \(D=d-(\mu_a-\mu_b)/2\le d\) and
+\(D'=(\mathcal V_a-\mathcal V_b)/2\ge0\).
+
+\medskip\noindent
+\textit{3. Comparison of normalized integrals.}
+Put \(L(x)=x\cosh x-\sinh x\), \(T(x)=L(x)/\sinh x\), and
+\(k(x)=x^2/T(x)\) for \(x>0\).
+The power series for \(x^2\sinh x\) and \(L(x)\) have coefficient
+ratios \(2m+1\) in degree \(2m+1\), \(m\ge1\). Hence \(k\ge3\) and
+\(k'\ge0\). We use here the elementary series comparison rule that
+increasing coefficient ratios give an increasing quotient of sums
+on the positive axis. For series \(f=\sum f_i x^i,\ g=\sum g_i x^i\) with
+positive denominator coefficients at the degrees used, pair the terms
+of \(f'g-fg'\) with indices \(i>j\) to get
+\((i-j)(f_i g_j-f_j g_i)x^{i+j-1}\).
+Decreasing ratios reverse the conclusion.
+
+Logarithmic differentiation and \(L'=x\sinh x\) give
+\(xk'=k(3+T-k)\).
+Since
+\(T(T+2)=x^2+x^2/\sinh^2 x-1\le x^2=kT\), we have \(T\le k-2\).
+Thus
+\begin{equation}\label{eq:diff-k}
+ x\bigl((k-2)k'-x\bigr)=k(k-3)(T-k+2)\le0.
+\end{equation}
+The function \(\kappa(z)=k(\sqrt z)\) is concave for \(z>0\).
+Indeed \(2z\kappa'=z+3\kappa-\kappa^2\), so
+\(2z\kappa''=1-(2\kappa-1)\kappa'\).
+Set \(R=(2\kappa-1)\kappa'-1\). It satisfies
+\[
+ (zR)'=2z(\kappa')^2-\frac{2\kappa-3}{2z}\,zR.
+\]
+If \(zR\) were negative at some \(z_0>0\), it would attain a negative
+minimum on \([\varepsilon,z_0]\) away from \(\varepsilon\) for
+sufficiently small \(\varepsilon>0\), since \(zR\ge-z\).
+At such a minimum its left derivative is nonpositive, whereas the
+displayed derivative is positive. This proves \(R\ge0\) and concavity.
+
+For \(0<u<1\) define
+\[
+ \gamma_x(t)=\frac{L(tx)}{t^2 L(x)},\qquad
+ m_x(u)=\left(\int_u^1\gamma_x(t)\dd t\right)^{-1}
+       =\frac{L(x)}{\sinh x-\sinh(ux)/u}.
+\]
+The integral identity follows by differentiating \(\sinh(tx)/t\).
+For \(x\ge y>0\) set \(\eta(t)=\log(\gamma_x(t)/\gamma_y(t))\).
+We have \(\eta(1)=0\) and
+\[
+ \frac{\eta'(t)}t=\frac{k(tx)-k(ty)}{t^2}
+       =\int_{y^2}^{x^2}\kappa'(t^2 z)\dd z.
+\]
+This is nonnegative and nonincreasing in \(t\), so \(\eta\) is increasing
+and concave as a function of \(t^2\).
+The mean of \(t^2\) under the probability density proportional to
+\(\gamma_y(t)\) on \([u,1]\) is at least \((u^2+1)/2\).
+Indeed \(\gamma_y(t)/t\) increases by \(k\ge3\) and \(L'=x\sinh x\).
+Against the weight \(t\dd t\), the mean of \(t^2\) is \((u^2+1)/2\).
+Multiplying the weight by an increasing function can only increase the
+mean, by integrating the product of the differences of the two functions
+at two points.
+Concavity gives \(\eta(t)\ge\eta(u)(1-t^2)/(1-u^2)\).
+Since \(\eta(u)\le0\), its mean is at least \(\eta(u)/2\).
+The tangent inequality for the exponential then implies
+\[
+ \frac{\int_u^1\gamma_x(t)\dd t}{\int_u^1\gamma_y(t)\dd t}
+ \ge e^{\eta(u)/2}=\sqrt{\gamma_x(u)/\gamma_y(u)} .
+\]
+Thus \(m_x'(u)=\gamma_x(u)m_x(u)^2\le m_y'(u)\).
+Now \(\gamma_x(1)=1\) and \(\gamma_x'(1)=k(x)-2\). Integrating the
+first-order Taylor expansion at \(1\) and taking the reciprocal gives
+\[
+ m_x(u)=\frac1{1-u}+\frac{k(x)-2}{2}+O(1-u),\qquad
+ m_x(u)-m_y(u)\ge\frac{k(x)-k(y)}2 .
+\]
+
+Apply this to \(x=sa,\ y=sb,\ u=1/s\). Direct substitution gives
+\(sp_q-1=m_{sq}(u)\) and \(s^2 A_q=k(sq)m_{sq}(u)\).
+Let \(W=sD\), \(e=(k(x)-k(y))/2\), and let \(k_0,m_0\) be the averages
+of \(k(x),k(y)\) and \(m_x(u),m_y(u)\), respectively.
+The comparison just proved gives \(W\ge e/2\ge0\).
+Also \(m_z\ge T(z)\) by the formula for \(m_z\).
+The series of \(L(z)\) gives \(L(z)\ge2(\sinh z-z)\), and
+\(\sinh(uz)/u\ge z\), so \(m_z\ge2\).
+Since \(k'\ge0\) implies \(k-2\le T+1\), we have \(2m_0\ge k_0-2\).
+Taking half-differences in \(p_q'=A_q-p_q^2\) gives
+\[
+ s^2D'=e m_0+(k_0-2-2m_0)W
+       \le (k_0-2)e/2
+       =\frac{(k(x)-2)^2-(k(y)-2)^2}{8}.
+\]
+By \eqref{eq:diff-k} the last quotient is at most
+\((x^2-y^2)/8=s^2cd/2\). This proves \(D\ge0\) and \(D'\le cd/2\).
+
+\medskip\noindent
+\textit{4. The remainders.}
+The series of \(F_q/q^3\) has nonnegative coefficients for \(s>1\).
+Thus \(j_q=e^{-sq}/(F_q/q^3)\) decreases in \(q\).
+For \(w_q\), use the equivalent quotient
+\[
+ w_q=\frac{q(e^{(s+1)q}-e^{(s-1)q}-2q)}
+             {e^{2sq}-1-s(e^{(s+1)q}-e^{(s-1)q})}.
+\]
+Let \(x=(s+1)/(2s)\), \(y=(s-1)/(2s)\), and
+\(h_m=(x^{m+1}-y^{m+1})/(x-y)\). Then \(x+y=1\), \(x-y=1/s\), and
+\[
+ h_0=h_1=1,\qquad h_{m+2}=h_{m+1}-xyh_m,\qquad
+ h_m^2-h_{m-1}h_{m+1}=(xy)^m\quad(m\ge1).
+\]
+Consequently \(h_m>0\) is decreasing and log-concave.
+The denominator starts in degree \(k=3\). In degree \(k\ge3\),
+the numerator and denominator coefficients have ratio
+\[
+ \frac{k h_{k-2}}{2s^2(1-h_{k-1})}
+ =\frac{k h_{k-2}}{2s^2xy\sum_{r=0}^{k-3}h_r}.
+\]
+Indeed the denominator coefficient is \((2s)^k(1-h_{k-1})/k!\),
+and the recurrence for \(h_m\) telescopes to
+\(1-h_{k-1}=xy\sum_{r=0}^{k-3}h_r\).
+For \(m=k-2\ge1\), the inverse of the displayed ratio divided by
+\(2s^2xy\) equals
+\[
+ \frac{m}{m+2}\cdot\frac{1}{m}\sum_{i=1}^m\frac{h_{m-i}}{h_m}.
+\]
+For fixed \(i\), the summand is nondecreasing in \(m\) by log-concavity.
+The added summand when \(m\) grows is largest by monotonicity of \(h_m\).
+Hence the average increases. The coefficient ratios of the quotient
+for \(w_q\) decrease, so the series comparison rule gives
+\(\Delta w\le0\). We also have \(\Delta j\le0\), completing
+\eqref{eq:diff-comparisons} and the proof of \eqref{eq:diff-bound}.
+If \(a\ne b\), its lower bound is positive. If \(a=b=c\), then
+\(U=H_s(c)\) and \(U^{(4)}=c^2 U''\).
+\end{proof}
+
+\begin{proof}[Proof of Theorem~\ref{thm:product}]
+For \(n\ge3\), Lemmas~\ref{lem:first} and \ref{lem:integral} and
+Proposition~\ref{prop:differential} give \(B_j\ge0\) for all \(j\).
+The integrand's differential factor at \(s=1\) is nonnegative by continuity.
+Lemma~\ref{lem:remainder} and \eqref{eq:squares} now prove \eqref{eq:minorant}.
+If \(x\ne y\) are positive, then \(B_1,B_2>0\).
+Since \(S_n(z)-S_{n-1}(z)=z^{n-1}\), these two polynomials have no common
+zero on \(\T\), and the minorant inequality is strict there. The minimum
+principle gives strictness throughout the closed disk as well.
+
+If \(x=y=e^{-a}\), then \(U_m=H_m(a)\), \(c=a\), and
+\[
+ L_m=m(\cosh a-1)\sinh a,\qquad E_n=0 .
+\]
+The first identity follows from
+\(\sinh((m+1)a)+\sinh((m-1)a)=2\cosh a\,\sinh(ma)\);
+the second follows from the difference \(H_{n+1}-H_{n-1}\) in
+Lemma~\ref{lem:remainder}. Hence \(B_j=0\) for \(j\ge2\), and the right
+side of \eqref{eq:squares} is \(B_1|S_n(z)|^2\). This gives exact contact at
+all nontrivial \(n\)th roots of unity. Formula \eqref{eq:weight} extends
+the bound and the equal-radius contact to zero radii by continuity.
+The arithmetic mean dominates the geometric mean and \(P>0\).
+Proposition~\ref{prop:flow} therefore applies with \(w=w_n\), \(\eta=1\),
+and \(v_k=\sqrt2\,p_k\in\R\). Section~1 covers the two smaller orders.
+\end{proof}
+
+\end{document}
